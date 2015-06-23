@@ -27,19 +27,25 @@ from PyQt4 import QtGui
 from ui_roitool_dialog import Ui_ROIToolDialog
 
 from .logger import qgis_log
+from .plot import ROIPlot
 
 logger = logging.getLogger('roitool')
 
 
-
 class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
+    """ TODO
+    """
     def __init__(self, iface, parent=None):
         super(ROIToolDialog, self).__init__(parent)
         self.setupUi(self)
-
         self.iface = iface
 
-        qgis_log('Loaded plugin', logging.INFO)
+        self._init_plot()
+
+    def _init_plot(self):
+        self.plot = ROIPlot()
+        self.widget_plot.setLayout(QtGui.QVBoxLayout())
+        self.widget_plot.layout().addWidget(self.plot)
 
     def unload(self):
         pass

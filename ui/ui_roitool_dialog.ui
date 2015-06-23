@@ -102,9 +102,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>widget</zorder>
-     <zorder>table_feature</zorder>
-     <zorder>but_update</zorder>
     </widget>
    </item>
    <item>
@@ -117,10 +114,11 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>300</width>
+       <width>350</width>
        <height>200</height>
       </size>
      </property>
+     <zorder>widget_4</zorder>
     </widget>
    </item>
    <item>
