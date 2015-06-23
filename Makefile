@@ -73,12 +73,6 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 	pyuic4 -o $@ $<
 
 %.qm : %.ts
-	lrelease $<
-
-%_rc.py : %.qrc $(RESOURCES_SRC)
-	pyrcc4 -o $*_rc.py  $<
-
-%.qm : %.ts
 	$(LRELEASE) $<
 
 test: compile transcompile
