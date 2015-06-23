@@ -26,7 +26,11 @@ from ui_roitool_dialog import Ui_ROIToolDialog
 
 
 class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
-    def __init__(self, parent=None):
-        """Constructor."""
+    def __init__(self, iface, parent=None):
         super(ROIToolDialog, self).__init__(parent)
         self.setupUi(self)
+
+        self.iface = iface
+
+    def unload(self):
+        pass
