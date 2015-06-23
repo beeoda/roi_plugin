@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import logging
 import os
 
 from PyQt4 import QtCore, QtGui
@@ -28,6 +29,10 @@ from PyQt4 import QtCore, QtGui
 import resources_rc
 
 from roitool_dialog import ROIToolDialog
+
+from .logger import qgis_log
+
+logger = logging.getLogger('roitool')
 
 
 class ROITool(QtCore.QObject):

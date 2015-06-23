@@ -20,9 +20,16 @@
  *                                                                         *
  ***************************************************************************/
 """
+import logging
+
 from PyQt4 import QtGui
 
 from ui_roitool_dialog import Ui_ROIToolDialog
+
+from .logger import qgis_log
+
+logger = logging.getLogger('roitool')
+
 
 
 class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
@@ -31,6 +38,8 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         self.setupUi(self)
 
         self.iface = iface
+
+        qgis_log('Loaded plugin', logging.INFO)
 
     def unload(self):
         pass
