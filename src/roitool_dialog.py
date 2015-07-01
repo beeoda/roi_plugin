@@ -32,6 +32,7 @@ from qgis.core import (QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
 from ui_roitool_dialog import Ui_ROIToolDialog
 
 from . import data
+from . import utils
 from .logger import qgis_log
 from .plot import ROIPlot
 
@@ -245,8 +246,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         rlayer_id = self.combox_raster.itemData(idx)
         if rlayer_id:
             rlayer = QgsMapLayerRegistry.instance().mapLayers()[rlayer_id]
-            data.band_names = [rlayer.bandName(i) for i in
-                               range(rlayer.bandCount())]
+            data.band_names = utils.get_band_names(rlayer)
         else:
             data.band_names = []
 

@@ -1,5 +1,6 @@
 """ ROI plots in matplotlib
 """
+import logging
 import os
 
 from matplotlib import use as mpl_use
@@ -8,7 +9,11 @@ import matplotlib as mpl
 from matplotlib.backends.backend_qt4agg \
     import FigureCanvasQTAgg as FigureCanvas
 
+from . import data
+
 mpl_version = map(int, mpl.__version__.split('.'))
+
+logger = logging.getLogger('roitool')
 
 
 # Note: FigureCanvas is also a QWidget
@@ -33,7 +38,12 @@ class ROIPlot(FigureCanvas):
         FigureCanvas.__init__(self, self.fig)
 
         self.setAutoFillBackground(False)
+        self.plot()
         self.fig.tight_layout()
 
     def plot(self):
-        pass
+        logger.debug(data.band_names)
+        # self.axis.set_xticks(range(0, len(data.band_names) + 1))
+        self.axis.set_xticklabels(data.band_names, rotation=45)
+
+        self.fig.tight_layout()
