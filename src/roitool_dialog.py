@@ -64,22 +64,21 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         layers = QgsMapLayerRegistry.instance().mapLayers()
         if layers:
             self._map_layers_added(layers)
+
         # Wire map layer added/remove events
         QgsMapLayerRegistry.instance().layersAdded.connect(
             self._map_layers_added)
         QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(
             self._map_layers_removed)
 
-        # Wire vector QComboBox
-        self.combox_vector.currentIndexChanged.connect(self._vlayer_changed)
-
-        # TODO: set and wire vector layer field QComboBox
+        # Populate and wire field QComboBox
         self.combox_field.clear()
         idx = self.combox_vector.currentIndex()
         self._vlayer_changed(idx)
+
         # Wire vector and raster QComboBox
-        # self.combox_vector.currentIndexChanged.connect(self._vlayer_changed)
-        # self.combox_raster.currentIndexChanged.connect(self._rlayer_changed)
+        self.combox_vector.currentIndexChanged.connect(self._vlayer_changed)
+        self.combox_raster.currentIndexChanged.connect(self._rlayer_changed)
 
         # Wire buttons
         self.but_update.clicked.connect(self._update_plot)
@@ -147,8 +146,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
             self.combox_raster.removeItem(idx)
             idx = self.combox_vector.findData(layer_id)
             self.combox_vector.removeItem(idx)
-            # TOOD: if layer is to be deleted/removed, do we need to
-            #       disconnect it?
 
     @QtCore.pyqtSlot(int)
     def _vlayer_changed(self, idx):
@@ -270,30 +267,29 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
     def unload(self):
         logger.debug('Unloading dialog')
-        # QgsMapLayerRegistry.instance().layersAdded.disconnect(
-        #     self._map_layers_added)
-        # QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(
-        # #     self._map_layers_removed)
-        # QgsMapLayerRegistry.instance().layersAdded.disconnect()
-        # QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect()
+        # Disconnect layer add/remove signals
+        QgsMapLayerRegistry.instance().layersAdded.disconnect(
+            self._map_layers_added)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(
+            self._map_layers_removed)
 
-        # for layer in QgsMapLayerRegistry.instance().mapLayers().itervalues():
-        #     if layer.receivers(QtCore.SIGNAL('layerNameChanged()')) > 0:
-        #         try:
-        #             layer.layerNameChanged.disconnect(self._layer_renamed)
-        #         except:
-        #             pass
-        #     if layer.receivers(QtCore.SIGNAL('updatedFields()')) > 0:
-        #         try:
-        #             layer.updatedFields.disconnect(self._vlayer_modified)
-        #         except:
-        #             pass
+        # Disconnect layers from all of our slots
+        for layer in QgsMapLayerRegistry.instance().mapLayers().itervalues():
+            if layer.receivers(QtCore.SIGNAL('layerNameChanged()')) > 0:
+                try:
+                    layer.layerNameChanged.disconnect(self._layer_renamed)
+                except:
+                    pass
+            if layer.receivers(QtCore.SIGNAL('updatedFields()')) > 0:
+                try:
+                    layer.updatedFields.disconnect(self._vlayer_modified)
+                except:
+                    pass
 
-        # # self.combox_vector.currentIndexChanged.disconnect(self._vlayer_changed)
-        # # self.combox_raster.currentIndexChanged.disconnect(self._rlayer_changed)
-        self.combox_vector.currentIndexChanged.disconnect()
-        self.combox_raster.currentIndexChanged.disconnect()
+        # Disconnect remaining UI elements
+        self.combox_vector.currentIndexChanged.disconnect(self._vlayer_changed)
+        self.combox_raster.currentIndexChanged.disconnect(self._rlayer_changed)
 
-        # self.but_update.clicked.disconnect(self._update_plot)
-        # self.but_saveplot.clicked.disconnect(self._save_plot)
-        # self.but_savestats.clicked.disconnect(self._export_data)
+        self.but_update.clicked.disconnect(self._update_plot)
+        self.but_saveplot.clicked.disconnect(self._save_plot)
+        self.but_savestats.clicked.disconnect(self._export_data)
