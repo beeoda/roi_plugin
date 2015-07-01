@@ -31,6 +31,7 @@ from qgis.core import (QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
 
 from ui_roitool_dialog import Ui_ROIToolDialog
 
+from . import data
 from .logger import qgis_log
 from .plot import ROIPlot
 
@@ -76,6 +77,9 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         self.combox_field.clear()
         idx = self.combox_vector.currentIndex()
         self._vlayer_changed(idx)
+        # Wire vector and raster QComboBox
+        # self.combox_vector.currentIndexChanged.connect(self._vlayer_changed)
+        # self.combox_raster.currentIndexChanged.connect(self._rlayer_changed)
 
         # Wire buttons
         self.but_update.clicked.connect(self._update_plot)
@@ -154,7 +158,8 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
           idx (int): index of `self.combox_vector` selected
 
         """
-        logger.debug('Selected new index: {i}'.format(i=idx))
+        logger.debug('Selected new vector: {v} (i={i})'.format(
+            v=self.combox_vector.currentText(), i=idx))
 
         self.combox_field.clear()
         if idx == -1:
@@ -225,11 +230,25 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         if isinstance(layer, QgsRasterLayer):
             idx = self.combox_raster.findData(layer.id())
             self.combox_raster.setItemText(idx, layer.name())
-            self.rlayers[layer.id()]['name'] = layer.name()
+            self.rlayers[layer.id()]['name'] = layer.name()  # TODO: remove
         elif isinstance(layer, QgsVectorLayer):
             idx = self.combox_vector.findData(layer.id())
             self.combox_vector.setItemText(idx, layer.name())
-            self.vlayers[layer.id()]['name'] = layer.name()
+            self.vlayers[layer.id()]['name'] = layer.name()  # TODO: remove
+
+    @QtCore.pyqtSlot(int)
+    def _rlayer_changed(self, idx):
+        """
+        """
+        logger.debug('Selected new raster: {r} ({i})'.format(
+            r=self.combox_raster.currentText(), i=idx))
+        rlayer_id = self.combox_raster.itemData(idx)
+        if rlayer_id:
+            rlayer = QgsMapLayerRegistry.instance().mapLayers()[rlayer_id]
+            data.band_names = [rlayer.bandName(i) for i in
+                               range(rlayer.bandCount())]
+        else:
+            data.band_names = []
 
     @QtCore.pyqtSlot()
     def _update_plot(self):
@@ -250,11 +269,31 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         logger.debug('ROI data export requested')
 
     def unload(self):
-        QgsMapLayerRegistry.instance().layersAdded.disconnect(
-            self._map_layers_added)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(
-            self._map_layers_removed)
+        logger.debug('Unloading dialog')
+        # QgsMapLayerRegistry.instance().layersAdded.disconnect(
+        #     self._map_layers_added)
+        # QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(
+        # #     self._map_layers_removed)
+        # QgsMapLayerRegistry.instance().layersAdded.disconnect()
+        # QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect()
 
-        self.but_update.clicked.disconnect(self._update_plot)
-        self.but_saveplot.clicked.disconnect(self._save_plot)
-        self.but_savestats.clicked.disconnect(self._export_data)
+        # for layer in QgsMapLayerRegistry.instance().mapLayers().itervalues():
+        #     if layer.receivers(QtCore.SIGNAL('layerNameChanged()')) > 0:
+        #         try:
+        #             layer.layerNameChanged.disconnect(self._layer_renamed)
+        #         except:
+        #             pass
+        #     if layer.receivers(QtCore.SIGNAL('updatedFields()')) > 0:
+        #         try:
+        #             layer.updatedFields.disconnect(self._vlayer_modified)
+        #         except:
+        #             pass
+
+        # # self.combox_vector.currentIndexChanged.disconnect(self._vlayer_changed)
+        # # self.combox_raster.currentIndexChanged.disconnect(self._rlayer_changed)
+        self.combox_vector.currentIndexChanged.disconnect()
+        self.combox_raster.currentIndexChanged.disconnect()
+
+        # self.but_update.clicked.disconnect(self._update_plot)
+        # self.but_saveplot.clicked.disconnect(self._save_plot)
+        # self.but_savestats.clicked.disconnect(self._export_data)
