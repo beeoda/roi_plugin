@@ -64,6 +64,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         layers = QgsMapLayerRegistry.instance().mapLayers()
         if layers:
             self._map_layers_added(layers.values())
+            self._rlayer_changed(self.combox_raster.currentIndex())
 
         # Wire map layer added/remove events
         QgsMapLayerRegistry.instance().layersAdded.connect(
@@ -89,6 +90,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         """ Setup plot """
         self.plot = ROIPlot()
         self.widget_plot.setLayout(QtGui.QVBoxLayout())
+        self.widget_plot.layout().setContentsMargins(0, 0, 0, 0)
         self.widget_plot.layout().addWidget(self.plot)
 
 # SIGNALS
@@ -253,6 +255,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         """ Handle plot update request
         """
         logger.debug('ROI plot update requested')
+        self.plot.plot()
 
     @QtCore.pyqtSlot()
     def _save_plot(self):
