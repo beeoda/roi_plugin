@@ -67,6 +67,9 @@ class ROITool(QtCore.QObject):
             if QtCore.qVersion() > '4.3.3':
                 QtCore.QCoreApplication.installTranslator(self.translator)
 
+    def initGui(self):
+        """ Create QDialog and put into a dock
+        """
         # Initialize dialog in a dock
         self.dialog = ROIToolDialog(self.iface)
 
@@ -77,37 +80,8 @@ class ROITool(QtCore.QObject):
         self.iface.addDockWidget(QtCore.Qt.RightDockWidgetArea,
                                  self.dock)
 
-    def initGui(self):
-        """ Create and load toolbar icon for plugin inside QGIS
-        """
-        # MapTool button
-        self.action = QtGui.QAction(
-            QtGui.QIcon(':/plugins/roitool/media/icon.png'),
-            'ROI Tool',
-            self.iface.mainWindow())
-        self.action.triggered.connect(self.show_dialog)
-        self.iface.addToolBarIcon(self.action)
-
-    def show_dialog(self):
-        self.dialog.show()
-
-    def run(self):
-        """Run method that performs all the real work"""
-        # show the dialog
-        self.dialog.show()
-        # Run the dialog event loop
-        result = self.dialog.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
     def unload(self):
         """ Shutdown and disconnect """
-        # Disconnect action
-        self.action.triggered.disconnect()
-
         # Close dialog
         self.dialog.unload()
         self.dialog.close()
@@ -117,6 +91,3 @@ class ROITool(QtCore.QObject):
         self.iface.removeDockWidget(self.dock)
         self.dock.deleteLater()
         self.dock = None
-
-        # Remove toolbar icons
-        self.iface.removeToolBarIcon(self.action)
