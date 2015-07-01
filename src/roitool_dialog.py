@@ -63,7 +63,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         #           we need to do it
         layers = QgsMapLayerRegistry.instance().mapLayers()
         if layers:
-            self._map_layers_added(layers)
+            self._map_layers_added(layers.values())
 
         # Wire map layer added/remove events
         QgsMapLayerRegistry.instance().layersAdded.connect(
@@ -105,6 +105,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
           layers (list): list of Qgs[Raster|Vector]Layer
 
         """
+        logger.debug('Adding map layers {l}'.format(l=layers))
         for layer in layers:
             if isinstance(layer, QgsRasterLayer):
                 self.rlayers[layer.id()] = dict(name=layer.name(),
