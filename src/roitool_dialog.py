@@ -289,7 +289,20 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
         # TODO: call to get stats
         # stats = zonal.summary(grouping)
-        self.plot.plot()
+        stats = {}
+        stats['forest'] = {
+            'mean': [10, 20, 10, 60, 25, 15, 0, 0],
+            'std': [3, 5, 3, 10, 5, 5, 0, 0]
+        }
+        stats['water'] = {
+            'mean': [3, 2, 1, 0, 0, 0, 0, 0],
+            'std': [1, 1, 1, 0, 0, 0, 0, 0]
+        }
+        stats['grass'] = {
+            'mean': [9, 18, 19, 70, 35, 25, 0, 0],
+            'std': [3, 5, 3, 13, 5, 5, 0, 0]
+        }
+        self.plot.plot(stats)
 
     @QtCore.pyqtSlot()
     def _save_plot(self):
