@@ -57,20 +57,29 @@ class ROIPlot(FigureCanvas):
             }
 
         """
-        logger.debug(data.band_names)
+        self.axis.clear()
+
         x_ticks = np.arange(len(data.band_names)) + 0.5
         if stats is None:
-            self.axis.plot(x_ticks, np.zeros(len(data.band_names)), 'none')
+            self.axis.plot(x_ticks, np.zeros(len(data.band_names)), 'ro')
         else:
-            # TODO: plot means
-            # TODO: plot std bars
-            # TODO: legend (outside or inside?)
-            from PyQt4 import QtCore
-            QtCore.pyqtRemoveInputHook()
-            from IPython.core.debugger import Pdb
-            Pdb().set_trace()
+            for k in stats:
+                self.axis.errorbar(x_ticks, stats[k]['mean'],
+                                   yerr=stats[k]['std'], label=k,
+                                   fmt='--o', lw=3, markersize=7.5,
+                                   capsize=5, capthick=3,
+                                   markeredgecolor='none',
+                                   picker=3)
+            self.axis.legend(loc='upper left', # bbox_to_anchor=(0.5, 1.05),
+                             ncol=2, fancybox=True, fontsize='x-large',
+                             numpoints=1)
 
+        self.axis.set_xlim([0, len(data.band_names)])
         self.axis.set_xticks(x_ticks)
         self.axis.set_xticklabels(data.band_names, rotation=45)
 
+        self.axis.set_xlabel('Raster Bands')
+        self.axis.set_ylabel(r'Mean $\pm$ Standard Deviation', rotation=90)
+
         self.fig.tight_layout()
+        self.fig.canvas.draw()
