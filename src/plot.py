@@ -70,7 +70,7 @@ class ROIPlot(FigureCanvas):
                                    capsize=5, capthick=3,
                                    markeredgecolor='none',
                                    picker=3)
-            self.axis.legend(loc='upper left', # bbox_to_anchor=(0.5, 1.05),
+            self.axis.legend(loc='best', # bbox_to_anchor=(0.5, 1.05),
                              ncol=2, fancybox=True, fontsize='x-large',
                              numpoints=1)
 

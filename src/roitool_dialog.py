@@ -20,7 +20,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-from collections import OrderedDict
 from functools import partial
 import logging
 
@@ -43,9 +42,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
     """ TODO
     """
-    layer_dict = dict(name=None, id=None, obj=None)
-    rlayers = OrderedDict()  # track raster layers as rlayer.id(): layer_dict
-    vlayers = OrderedDict()  # track vector layers as vlayer.id(): layer_dict
 
     def __init__(self, iface, parent=None):
         super(ROIToolDialog, self).__init__(parent)
@@ -58,10 +54,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
     def _init_gui(self):
         """ Initialize GUI components """
         # Populate QComboBox with raster and vector layers
-        # TODO: I don't think we need to do this -- layersAdded does it
-        #       Should make sure it actually works 100% of time
-        #       RE: what if we enable plugin after layers added...
-        #           we need to do it
         layers = QgsMapLayerRegistry.instance().mapLayers()
         if layers:
             self._map_layers_added(layers.values())
@@ -99,7 +91,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
     def _map_layers_added(self, layers):
         """ Keep track of newly added layers
 
-        Adds new layers to either `self.rlayers` or `self.vlayers`.
         Adds new layers to appropriate QComboBox
         Wires rename (`layerNameChanged`) and vector layer modified
             (`layerModified`) signals
@@ -111,17 +102,11 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         logger.debug('Adding map layers {l}'.format(l=layers))
         for layer in layers:
             if isinstance(layer, QgsRasterLayer):
-                self.rlayers[layer.id()] = dict(name=layer.name(),
-                                                id=layer.id(),
-                                                obj=layer)
                 self.combox_raster.addItem(layer.name(), layer.id())
                 # Wire rename
                 layer.layerNameChanged.connect(
                     partial(self._layer_renamed, layer))
             elif isinstance(layer, QgsVectorLayer):
-                self.vlayers[layer.id()] = dict(name=layer.name(),
-                                                id=layer.id(),
-                                                obj=layer)
                 self.combox_vector.addItem(layer.name(), layer.id())
                 # Wire rename
                 layer.layerNameChanged.connect(
@@ -134,7 +119,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
     def _map_layers_removed(self, layer_ids):
         """ Keep track of removed layers
 
-        Remove from `self.rlayers` or `self.vlayers`
         Remove QComboBox entry
         Disconnect QgsMapLayer from signals
 
@@ -229,11 +213,9 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         if isinstance(layer, QgsRasterLayer):
             idx = self.combox_raster.findData(layer.id())
             self.combox_raster.setItemText(idx, layer.name())
-            self.rlayers[layer.id()]['name'] = layer.name()  # TODO: remove
         elif isinstance(layer, QgsVectorLayer):
             idx = self.combox_vector.findData(layer.id())
             self.combox_vector.setItemText(idx, layer.name())
-            self.vlayers[layer.id()]['name'] = layer.name()  # TODO: remove
 
     @QtCore.pyqtSlot(int)
     def _rlayer_changed(self, idx):
