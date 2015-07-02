@@ -19,8 +19,10 @@ def abbreviate_band_name(name):
     name = re.sub('(?i)surface.*refl[a-z]*', 'SR', name)
     # Abbreviate "Top of Atmosphere"
     name = re.sub('(?i)top.*atmo[a-z]*', 'TOA', name)
-    # Abbreviate lingering "reflecance"
+    # Abbreviate lingering "reflectance"
     name = re.sub('(?i)refl[a-z]*', 'refl', name)
+    # Abbreviate temperature
+    name = re.sub('(?i)temp[a-z]*', 'temp', name)
     # Abbreviate "Near Infrared" or "Shortwave Infrared"
     name = re.sub('(?i)near.*infrared', 'NIR', name)
     name = re.sub('(?i)short.*infrared', 'SWIR', name)
