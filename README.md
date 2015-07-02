@@ -1,5 +1,7 @@
-# ROI_Plugin
+# ROI Explorer
 QGIS Plugin for exploring the spectral signatures of ROIs
+
+<img src="./docs/ROITool_demo.png" width="400">
 
 ## TODO
 - [ ] Implement zonal stats code
@@ -15,4 +17,7 @@ QGIS Plugin for exploring the spectral signatures of ROIs
     + Blockers:
         * Make layout changes with splitter
         * Ensure certain UI elements can't be squashed (e.g., only plot or table can collapse) 
+- [ ] Rebrand plugin
+- [ ] Icon
+- [ ] Upload to QGIS repository
 - [ ] TODO
