@@ -101,8 +101,8 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
         Adds new layers to either `self.rlayers` or `self.vlayers`.
         Adds new layers to appropriate QComboBox
-        Wires QgsMapLayer rename (`layerNameChanged`) and data change signals
-          (dataChanged)
+        Wires rename (`layerNameChanged`) and vector layer modified
+            (`layerModified`) signals
 
         Args:
           layers (list): list of Qgs[Raster|Vector]Layer
@@ -115,9 +115,9 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
                                                 id=layer.id(),
                                                 obj=layer)
                 self.combox_raster.addItem(layer.name(), layer.id())
+                # Wire rename
                 layer.layerNameChanged.connect(
                     partial(self._layer_renamed, layer))
-                # TODO: wire
             elif isinstance(layer, QgsVectorLayer):
                 self.vlayers[layer.id()] = dict(name=layer.name(),
                                                 id=layer.id(),
@@ -126,10 +126,9 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
                 # Wire rename
                 layer.layerNameChanged.connect(
                     partial(self._layer_renamed, layer))
-                # Wire field change
-                layer.updatedFields.connect(
+                # Wire data changed (feature or field changed)
+                layer.layerModified.connect(
                     partial(self._vlayer_modified, layer))
-                # TODO: Wire data changed
 
     @QtCore.pyqtSlot(list)
     def _map_layers_removed(self, layer_ids):
@@ -143,7 +142,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
           layer_ids (list): list of layer IDs that have been removed
         """
         logger.debug('Removing layers: {l}'.format(l=layer_ids))
-        # TODO: see docstring
         for layer_id in layer_ids:
             # Try to remove from both QComboxBox
             idx = self.combox_raster.findData(layer_id)
@@ -279,16 +277,16 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
         # Disconnect layers from all of our slots
         for layer in QgsMapLayerRegistry.instance().mapLayers().itervalues():
-            if layer.receivers(QtCore.SIGNAL('layerNameChanged()')) > 0:
-                try:
-                    layer.layerNameChanged.disconnect(self._layer_renamed)
-                except:
-                    pass
-            if layer.receivers(QtCore.SIGNAL('updatedFields()')) > 0:
-                try:
-                    layer.updatedFields.disconnect(self._vlayer_modified)
-                except:
-                    pass
+            try:
+                layer.layerNameChanged.disconnect(self._layer_renamed)
+            except:
+                logger.debug('layerNameChanged disconnect exception',
+                             exc_info=True)
+            try:
+                layer.layerModified.disconnect(self._vlayer_modified)
+            except:
+                logger.debug('Layer modified disconnect exception',
+                             exc_info=True)
 
         # Disconnect remaining UI elements
         self.combox_vector.currentIndexChanged.disconnect(self._vlayer_changed)
