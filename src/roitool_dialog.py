@@ -253,6 +253,42 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         """ Handle plot update request
         """
         logger.debug('ROI plot update requested')
+        # Check if user has selected ROIs
+        items = self.table_feature.selectedItems()
+        if not items:
+            qgis_log('Cannot plot ROI stats - no ROIs are selected in table',
+                     logging.INFO)
+            return
+
+        # Index of selected grouping attribute
+        group_field = self.combox_field.itemData(
+            self.combox_field.currentIndex())
+        group_idx = None
+        for i in range(self.table_feature.columnCount()):
+            txt = self.table_feature.horizontalHeaderItem(i).text()
+            if txt == group_field:
+                group_idx = i
+                break
+
+        if group_idx is None:
+            logger.error('Cannot determine table column to group by')
+            return
+
+        # Currently selected FIDs and grouping names
+        grouping = {}  # grouping[group_field] = [fid_1, ..., fid_N]
+        for item in items:
+            # `items` is all cells (duplicate rows); iterate over just one col
+            if item.column() == group_idx:
+                row = item.row()
+                key = item.data(0)
+                fid = self.table_feature.item(row, 0).data(0)
+                if key in grouping:
+                    grouping[key].append(fid)
+                else:
+                    grouping[key] = [fid]
+
+        # TODO: call to get stats
+        # stats = zonal.summary(grouping)
         self.plot.plot()
 
     @QtCore.pyqtSlot()
