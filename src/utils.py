@@ -165,5 +165,6 @@ def zonal_stats(grouping, rPath, lPath):
         substats['std'] = stdvi
         substats['mean'] = meani
         stats[a] = substats
+        outDataSource.Destroy()
     return stats
 
