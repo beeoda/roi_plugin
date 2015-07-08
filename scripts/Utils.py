@@ -9,6 +9,7 @@ import gdal, ogr, osr, numpy, sys, pandas
 
 
 #Define function to extract mean and std
+def get_geometry(grouping):
 
 def proc(fid):
 
@@ -101,7 +102,9 @@ def plot():
     dtfrm.plot(yerr=dtstd, ax=ax, kind='line')
 
 #Main
-def main():
+def main(vector, raster):
+    input_value_raster = raster
+    input_zone_polygon = vector
     for i in featList:
         mean, stdv, names=proc(i)
         finmean[i]=mean

@@ -57,11 +57,11 @@ class ROIPlot(FigureCanvas):
             }
 
         """
+        numBands = len(data.band_names) - 1
         self.axis.clear()
-
-        x_ticks = np.arange(len(data.band_names)) + 0.5
+        x_ticks = np.arange(numBands) + 0.5
         if stats is None:
-            self.axis.plot(x_ticks, np.zeros(len(data.band_names)), 'ro')
+            self.axis.plot(x_ticks, np.zeros(numBands), 'ro')
         else:
             for k in stats:
                 self.axis.errorbar(x_ticks, stats[k]['mean'],
@@ -74,7 +74,7 @@ class ROIPlot(FigureCanvas):
                              ncol=2, fancybox=True, fontsize='x-large',
                              numpoints=1)
 
-        self.axis.set_xlim([0, len(data.band_names)])
+        self.axis.set_xlim([0, numBands])
         self.axis.set_xticks(x_ticks)
         self.axis.set_xticklabels(data.band_names, rotation=45)
 
