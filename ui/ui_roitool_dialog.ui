@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ROI Tool</string>
+   <string>Region of Interest (ROI) Explorer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -32,14 +32,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Vector</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Field</string>
+         <string>Vector:</string>
         </property>
        </widget>
       </item>
@@ -62,12 +55,19 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Raster</string>
+         <string>Raster:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1" colspan="3">
        <widget class="QComboBox" name="combox_raster"/>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>ROI Label Field:</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

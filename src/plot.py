@@ -59,7 +59,7 @@ class ROIPlot(FigureCanvas):
         """
         self.axis.clear()
 
-        n_bands = len(data.band_names) - 1 if data.band_names else 0
+        n_bands = len(data.band_names)
 
         x_ticks = np.arange(n_bands) + 0.5
         if stats is None:

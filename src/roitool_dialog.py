@@ -25,19 +25,16 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from PyQt4.QtCore import QFile, QFileInfo
-
-from qgis.core import (QgsFeatureRequest, QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
+from qgis.core import (QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
                        QgsMapLayerRegistry)
 
 from ui_roitool_dialog import Ui_ROIToolDialog
 
 from . import data
 from . import utils
-from .utils import zonal_stats
+from . import zonal
 from .logger import qgis_log
 from .plot import ROIPlot
-import ogr, gdal
 
 logger = logging.getLogger('roitool')
 
@@ -262,7 +259,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
         # Currently selected FIDs and grouping names
         grouping = {}  # grouping[group_field] = [fid_1, ..., fid_N]
-        ids = []
         for item in items:
             # `items` is all cells (duplicate rows); iterate over just one col
             if item.column() == group_idx:
@@ -273,36 +269,18 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
                     grouping[key].append(fid)
                 else:
                     grouping[key] = [fid]
-        # TODO: call to get stats
-        # stats = zonal.summary(grouping)
-        stats = {}
 
-        #Get the path to the raster
-        rlayer_id = self.combox_raster.itemData(self.combox_raster.currentIndex())
-        rasterlayer = QgsMapLayerRegistry.instance().mapLayers()[rlayer_id]
-        rPath = rasterlayer.source()
+        # Get the path to the raster
+        rlayer_id = self.combox_raster.itemData(
+            self.combox_raster.currentIndex())
+        rlayer = QgsMapLayerRegistry.instance().mapLayers()[rlayer_id]
 
-        #Get the current vector
-        layer_id = self.combox_vector.itemData(
+        # Get the current vector
+        vlayer_id = self.combox_vector.itemData(
                 self.combox_vector.currentIndex())
-        layer = QgsMapLayerRegistry.instance().mapLayers()[layer_id]
-        features = layer.getFeatures()
-        lPath = layer.source()
+        vlayer = QgsMapLayerRegistry.instance().mapLayers()[vlayer_id]
 
-        stats = zonal_stats(grouping, rPath, lPath)
-
-       # stats['forest'] = {
-       #     'mean': [10, 20, 10, 60, 25, 15, 0, 0],
-       #     'std': [3, 5, 3, 10, 5, 5, 0, 0]
-       # }
-       # stats['water'] = {
-       #     'mean': [3, 2, 1, 0, 0, 0, 0, 0],
-       #     'std': [1, 1, 1, 0, 0, 0, 0, 0]
-       # }
-       # stats['grass'] = {
-       #     'mean': [9, 18, 19, 70, 35, 25, 0, 0],
-       #     'std': [3, 5, 3, 13, 5, 5, 0, 0]
-       # }
+        stats = zonal.zonal_stats(grouping, vlayer, rlayer)
         self.plot.plot(stats)
 
     @QtCore.pyqtSlot()
