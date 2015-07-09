@@ -5,6 +5,7 @@ import re, ogr, osr
 from osgeo import gdal
 import numpy as np
 
+
 def abbreviate_band_name(name):
     """ Return an abbreviated version of a band name
 
@@ -59,6 +60,7 @@ def get_band_names(rlayer):
                 band_names.append(rlayer.bandName(i + 1))
         return band_names
 
+
 def zonal_stats(grouping, rPath, lPath):
     """ Returns zonal statistics for selected regions
 
@@ -93,10 +95,10 @@ def zonal_stats(grouping, rPath, lPath):
     #Now do the loop
     for a, b in grouping.iteritems():
         length = len(b)
-        list = tuple(b)
-        if len(list) == 1:
-            list = '(%s)' % ', '.join(map(repr, list))
-        layer.SetAttributeFilter("id = '%d' and FID in %s" % (a,list))
+        _list = tuple(b)
+        if len(_list) == 1:
+            _list = '(%s)' % ', '.join(map(repr, _list))
+        layer.SetAttributeFilter("id = '%d' and FID in %s" % (a, _list))
 
 
         #Create temp shapefile
