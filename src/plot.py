@@ -72,9 +72,11 @@ class ROIPlot(FigureCanvas):
                                    capsize=5, capthick=3,
                                    markeredgecolor='none',
                                    picker=3)
-            self.axis.legend(loc='best', # bbox_to_anchor=(0.5, 1.05),
-                             ncol=2, fancybox=True, fontsize='x-large',
-                             numpoints=1)
+            legend = self.axis.legend(loc='best',  # bbox_to_anchor=(0.5, 1.05),
+                                      ncol=1, fancybox=True,
+                                      fontsize='x-large', numpoints=1)
+            legend.draggable(state=True)
+            legend.get_frame().set_alpha(0.5)
 
         self.axis.set_xlim([0, n_bands])
         self.axis.set_xticks(x_ticks)
