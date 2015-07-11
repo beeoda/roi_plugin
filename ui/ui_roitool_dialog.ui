@@ -131,24 +131,17 @@
       <property name="margin">
        <number>0</number>
       </property>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="but_saveplot">
-        <property name="text">
-         <string>Save Plot</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="but_savestats">
-        <property name="text">
-         <string>Export Stats</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2">
+      <item row="0" column="0">
        <widget class="QPushButton" name="but_update">
         <property name="text">
          <string>Update</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="but_savestats">
+        <property name="text">
+         <string>Export Stats</string>
         </property>
        </widget>
       </item>

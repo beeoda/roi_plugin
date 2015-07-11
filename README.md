@@ -5,7 +5,7 @@ QGIS Plugin for exploring the spectral signatures of ROIs
 
 ## TODO
 - [x] Implement zonal stats code
-- [ ] Implement plot save dialog
+- [x] Implement plot save dialog
 - [ ] Implement stats export dialog
 - [ ] Add help
 - [ ] Add "ROI Explorer" menu item that includes help and about

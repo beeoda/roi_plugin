@@ -25,6 +25,8 @@ import logging
 
 import matplotlib
 matplotlib.use('Qt4Agg')
+from matplotlib.backends.backend_qt4 import \
+    NavigationToolbar2QT as NavigationToolbar
 from PyQt4 import QtCore, QtGui
 
 from qgis.core import (QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
@@ -79,14 +81,17 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
         # Wire buttons
         self.but_update.clicked.connect(self._update_plot)
-        self.but_saveplot.clicked.connect(self._save_plot)
         self.but_savestats.clicked.connect(self._export_data)
 
     def _init_plot(self):
         """ Setup plot """
-        self.plot = ROIPlot()
         self.widget_plot.setLayout(QtGui.QVBoxLayout())
         self.widget_plot.layout().setContentsMargins(0, 0, 0, 0)
+
+        self.plot = ROIPlot()
+        self.plot_nav = NavigationToolbar(self.plot.fig.canvas, self)
+
+        self.widget_plot.layout().addWidget(self.plot_nav)
         self.widget_plot.layout().addWidget(self.plot)
 
 # SIGNALS
@@ -286,12 +291,6 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         self.plot.plot(stats)
 
     @QtCore.pyqtSlot()
-    def _save_plot(self):
-        """ Handle a plot save request
-        """
-        logger.debug('ROI plot save requested')
-
-    @QtCore.pyqtSlot()
     def _export_data(self):
         """ Handle a data export request
         """
@@ -323,5 +322,4 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         self.combox_raster.currentIndexChanged.disconnect(self._rlayer_changed)
 
         self.but_update.clicked.disconnect(self._update_plot)
-        self.but_saveplot.clicked.disconnect(self._save_plot)
         self.but_savestats.clicked.disconnect(self._export_data)
