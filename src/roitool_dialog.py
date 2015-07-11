@@ -23,6 +23,8 @@
 from functools import partial
 import logging
 
+import matplotlib
+matplotlib.use('Qt4Agg')
 from PyQt4 import QtCore, QtGui
 
 from qgis.core import (QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
