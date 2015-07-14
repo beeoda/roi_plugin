@@ -29,7 +29,7 @@ from matplotlib.backends.backend_qt4 import \
     NavigationToolbar2QT as NavigationToolbar
 from PyQt4 import QtCore, QtGui
 
-from qgis.core import (QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
+from qgis.core import (QGis, QgsMapLayer, QgsRasterLayer, QgsVectorLayer,
                        QgsMapLayerRegistry)
 
 from ui_roitool_dialog import Ui_ROIToolDialog
@@ -114,7 +114,8 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
                 # Wire rename
                 layer.layerNameChanged.connect(
                     partial(self._layer_renamed, layer))
-            elif isinstance(layer, QgsVectorLayer):
+            elif isinstance(layer, QgsVectorLayer) and \
+                    layer.wkbType() in (QGis.WKBPolygon, QGis.WKBMultiPolygon):
                 self.combox_vector.addItem(layer.name(), layer.id())
                 # Wire rename
                 layer.layerNameChanged.connect(
