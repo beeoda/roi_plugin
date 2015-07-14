@@ -1,4 +1,7 @@
 """ Code for extracting polygon summary statistics from a raster
+
+For reference see:
+http://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html#calculate-zonal-statistics
 """
 from osgeo import gdal, ogr, osr
 import numpy as np
@@ -31,8 +34,12 @@ def zonal_stats(grouping, vlayer, rlayer):
     vector_ds = ogr.Open(vlayer.source())
     layer = vector_ds.GetLayer()
 
+    # Get spatial reference systems & setup coordinate transformation
     raster_srs = osr.SpatialReference()
     raster_srs.ImportFromWkt(raster_ds.GetProjectionRef())
+    vector_srs = layer.GetSpatialRef()
+
+    coord_trans = osr.CoordinateTransformation(vector_srs, raster_srs)
 
     gt = raster_ds.GetGeoTransform()
     ul_x, ul_y = gt[0], gt[3]
@@ -56,6 +63,8 @@ def zonal_stats(grouping, vlayer, rlayer):
             featureDefn = out_layer.GetLayerDefn()
             feature = ogr.Feature(featureDefn)
             geom = feat.GetGeometryRef()
+            geom.Transform(coord_trans)
+
             feature.SetGeometry(geom)
             out_layer.CreateFeature(feat)
             feat = layer.GetNextFeature()
