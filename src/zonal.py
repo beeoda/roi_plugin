@@ -3,6 +3,9 @@
 from osgeo import gdal, ogr, osr
 import numpy as np
 
+gdal.AllRegister()
+gdal.UseExceptions()
+
 
 def zonal_stats(grouping, vlayer, rlayer):
     """ Returns zonal statistics for selected regions
@@ -78,7 +81,10 @@ def zonal_stats(grouping, vlayer, rlayer):
         target_ds.SetProjection(raster_srs.ExportToWkt())
 
         # Rasterize zone polygon to raster
-        gdal.RasterizeLayer(target_ds, [1], memLayer, burn_values=[1])
+        status = gdal.RasterizeLayer(target_ds, [1], memLayer, burn_values=[1])
+        if status != 0:
+            raise Exception('Failed to rasterize features in group {}'.format(
+                g=k))
 
         # Read raster as arrays
         meani = []

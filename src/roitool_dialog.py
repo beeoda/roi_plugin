@@ -22,6 +22,8 @@
 """
 from functools import partial
 import logging
+import os
+import sys
 
 import matplotlib
 matplotlib.use('Qt4Agg')
@@ -288,8 +290,19 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
                 self.combox_vector.currentIndex())
         vlayer = QgsMapLayerRegistry.instance().mapLayers()[vlayer_id]
 
-        stats = zonal.zonal_stats(grouping, vlayer, rlayer)
-        self.plot.plot(stats)
+        try:
+            stats = zonal.zonal_stats(grouping, vlayer, rlayer)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            qgis_log('Could not run zonal statistics; check log for details',
+                     level=logging.ERROR)
+            logger.error('    Message: {}'.format(e.message))
+            logger.error('    Type: {}'.format(exc_type))
+            logger.error('    File:line: {}:{}'.format(fname,
+                                                       exc_tb.tb_lineno))
+        else:
+            self.plot.plot(stats)
 
     @QtCore.pyqtSlot()
     def _export_data(self):
