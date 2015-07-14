@@ -65,7 +65,7 @@
       <item row="3" column="0" colspan="2">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>ROI Label Field:</string>
+         <string>Aggregate features by field:</string>
         </property>
        </widget>
       </item>
