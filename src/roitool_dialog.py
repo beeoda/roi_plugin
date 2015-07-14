@@ -125,6 +125,8 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
                 # Wire data changed (feature or field changed)
                 layer.layerModified.connect(
                     partial(self._vlayer_modified, layer))
+                layer.editingStopped.connect(
+                    partial(self._vlayer_modified, layer))
 
     @QtCore.pyqtSlot(list)
     def _map_layers_removed(self, layer_ids):
@@ -164,7 +166,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
             self.combox_vector.currentIndex())
         layer = QgsMapLayerRegistry.instance().mapLayers()[layer_id]
 
-        n_features = layer.featureCount()
+        n_features = layer.pendingFeatureCount()
         features = layer.getFeatures()
         fields = layer.pendingFields()
 
@@ -330,6 +332,10 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
             except:
                 logger.debug('Layer modified disconnect exception',
                              exc_info=True)
+            try:
+                layer.editingStopped.disconnect(self._vlayer_modified)
+            except:
+                logger.debug('Layer editing finished disconnect exception')
 
         # Disconnect remaining UI elements
         self.combox_vector.currentIndexChanged.disconnect(self._vlayer_changed)
