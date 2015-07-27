@@ -83,7 +83,7 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
 
         # Wire buttons
         self.but_update.clicked.connect(self._update_plot)
-        self.but_savestats.clicked.connect(self._export_data)
+        # self.but_savestats.clicked.connect(self._export_data)
 
     def _init_plot(self):
         """ Setup plot """
@@ -342,4 +342,4 @@ class ROIToolDialog(QtGui.QDialog, Ui_ROIToolDialog):
         self.combox_raster.currentIndexChanged.disconnect(self._rlayer_changed)
 
         self.but_update.clicked.disconnect(self._update_plot)
-        self.but_savestats.clicked.disconnect(self._export_data)
+        # self.but_savestats.clicked.disconnect(self._export_data)
