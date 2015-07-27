@@ -28,7 +28,7 @@ homepage=https://github.com/bullocke/ROI_Plugin
 tracker=https://github.com/bullocke/ROI_Plugin/issues
 repository=https://github.com/bullocke/ROI_Plugin
 category=Plugins
-icon=icon.png
+icon=media/icon.png
 # experimental flag
 experimental=True
 
