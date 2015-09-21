@@ -19,6 +19,9 @@ email=bullocke@bu.edu
 # Uncomment the following line and add your changelog:
 # changelog=
 
+# About: longer text which describes the plugin in details, no HTML allowed
+about=QGIS Plugin for exploring the spectral signatures of regions of interests (ROI). Users may visualize the mean and standard deviations of spectral signatures from a raster image of pixels within selected polygons. Features within the vector dataset will be grouped together if they share the same value within the field indicated by the "Aggregate features by field" drop down box. This plugin is meant to be useful for investigating spectral signatures associated with training data input to a land cover classification. Changing the field specified by the "Aggregate features by field" drop down box allows users to plot within- or between-group spectral signatures. For example, a field named "landcover" may be used to distinguish across spectral signature groups while a label "sample_number" might distinguish different polygons within the same group.
+
 # Tags are comma separated with spaces allowed
 tags=classification, remote sensing, training data, ROI
 
