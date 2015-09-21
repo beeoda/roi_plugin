@@ -73,8 +73,8 @@ class ROITool(QtCore.QObject):
         # Initialize dialog in a dock
         self.dialog = ROIToolDialog(self.iface)
 
-        self.dock = QtGui.QDockWidget('ROI Tool', self.iface.mainWindow())
-        self.dock.setObjectName('ROI Tools')
+        self.dock = QtGui.QDockWidget('ROI Explorer', self.iface.mainWindow())
+        self.dock.setObjectName('ROI Explorer')
         self.dock.setWidget(self.dialog)
 
         self.iface.addDockWidget(QtCore.Qt.RightDockWidgetArea,

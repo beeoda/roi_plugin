@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- ROITool
+ ROIExplorer
                                  A QGIS plugin
  QGIS Plugin for exploring the spectral signatures of ROIs
                              -------------------
