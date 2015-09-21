@@ -43,6 +43,8 @@ PY_FILES = src/*.py
 
 UI_FILES = $(shell find ui/ -name 'ui*.ui' | sed 's|\.ui|\.py|g')
 
+LICENSE = LICENSE
+
 EXTRAS = media/ metadata.txt
 
 RESOURCE_FILES = resources_rc.py
@@ -108,6 +110,7 @@ deploy: compile doc transcompile
 	cp -vfr $(EXTRAS) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	cp -vfr i18n $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	cp -vfr $(HELP) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/help
+	cp -vf $(LICENSE) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
 # The dclean target removes compiled python files from plugin directory
 # also deletes any .git entry
