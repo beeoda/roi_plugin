@@ -12,26 +12,26 @@ import numpy as np
 
 from . import data
 
-mpl_version = map(int, mpl.__version__.split('.'))
-
 logger = logging.getLogger('roitool')
 
 
 # Note: FigureCanvas is also a QWidget
 class ROIPlot(FigureCanvas):
-    """ TODO
-
+    """ Plot widget
     """
-
     def __init__(self):
         style = os.environ.get('ROITOOL_PLOT_STYLE', 'ggplot')
 
-        if style and mpl_version[0] >= 1 and mpl_version[1] >= 4:
-            import matplotlib.style
-            if style == 'xkcd':
-                mpl.pyplot.xkcd()
-            else:
-                mpl.style.use(style)
+        if style:
+            try:
+                import matplotlib.style
+                if style == 'xkcd':
+                    mpl.pyplot.xkcd()
+                else:
+                    mpl.style.use(style)
+            except:
+                logger.warning('Could not set plot style. '
+                               'Requires matplotlib>=1.4.0')
 
         self.fig = mpl.figure.Figure()
         self.axis = self.fig.add_subplot(111)
