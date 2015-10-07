@@ -80,6 +80,24 @@ class ROITool(QtCore.QObject):
         self.iface.addDockWidget(QtCore.Qt.RightDockWidgetArea,
                                  self.dock)
 
+        # Setup action for showing/hiding plugin
+        # toggleViewAction() returns QAction to show/close dock widget. See:
+        # http://doc.qt.io/qt-4.8/qdockwidget.html#toggleViewAction
+        self.action = self.dock.toggleViewAction()
+        self.action.setIcon(QtGui.QIcon(':/plugins/roitool/media/icon.png'))
+        self.action.setText('Show/hide ROI Explorer')
+        self.action.setWhatsThis('Show/hide ROI Explorer plugin')
+
+        # Add plugin to Raster menu
+        if hasattr(self.iface, "addPluginToRasterMenu"):
+            # Raster menu and toolbar available
+            self.iface.addPluginToRasterMenu("&ROI Explorer", self.action)
+            self.iface.addRasterToolBarIcon(self.action)
+        else:
+            # there is no Raster menu, place plugin under Plugins menu as usual
+            self.iface.addPluginToMenu("&ROI Explorer", self.action)
+            self.iface.addToolBarIcon(self.action)
+
     def unload(self):
         """ Shutdown and disconnect """
         # Close dialog
@@ -91,3 +109,13 @@ class ROITool(QtCore.QObject):
         self.iface.removeDockWidget(self.dock)
         self.dock.deleteLater()
         self.dock = None
+
+        # Remove menu entry
+        if hasattr(self.iface, "addPluginToRasterMenu"):
+            # Raster menu and toolbar available
+            self.iface.removePluginRasterMenu("&ROI Explorer", self.action)
+            self.iface.removeRasterToolBarIcon(self.action)
+        else:
+            # there is no Raster menu, place plugin under Plugins menu as usual
+            self.iface.removePluginMenu("&ROI Explorer", self.action)
+            self.iface.removeToolBarIcon(self.action)
